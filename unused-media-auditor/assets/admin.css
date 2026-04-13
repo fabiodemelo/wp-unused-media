@@ -1,0 +1,65 @@
+.uma-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin: 18px 0 22px;
+}
+
+.uma-select-all {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.uma-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 18px;
+}
+
+.uma-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 12px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.uma-card input[type="checkbox"] {
+    margin: 0;
+}
+
+.uma-card__preview {
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f6f7f7;
+}
+
+.uma-card__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.uma-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.uma-card__body strong {
+    font-size: 14px;
+}
+
+.uma-settings-form {
+    max-width: 720px;
+}
