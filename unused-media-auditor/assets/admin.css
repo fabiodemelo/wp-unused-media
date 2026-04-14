@@ -1,9 +1,37 @@
 .uma-toolbar {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    margin: 18px 0 26px;
+    padding: 16px 18px;
+    border: 1px solid #dcdcde;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f6f7f7 100%);
+}
+
+.uma-toolbar__actions,
+.uma-toolbar__utilities {
+    display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     align-items: center;
-    margin: 18px 0 22px;
+}
+
+.uma-toolbar__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.uma-bulk-action {
+    min-width: 210px;
+}
+
+.uma-selection-summary {
+    color: #50575e;
+    font-size: 13px;
 }
 
 .uma-select-all {
@@ -29,7 +57,16 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
 }
 
-.uma-card input[type="checkbox"] {
+.uma-card__select label {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.uma-card__select input[type="checkbox"] {
     margin: 0;
 }
 
@@ -62,4 +99,15 @@
 
 .uma-settings-form {
     max-width: 720px;
+}
+
+@media (max-width: 782px) {
+    .uma-toolbar {
+        align-items: flex-start;
+    }
+
+    .uma-toolbar__actions,
+    .uma-toolbar__utilities {
+        width: 100%;
+    }
 }

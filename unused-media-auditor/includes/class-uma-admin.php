@@ -348,33 +348,43 @@ class UMA_Admin
         $nonce_action = ('archived' === $context) ? 'uma_bulk_archived' : 'uma_bulk_unused';
         $primary_label = ('archived' === $context) ? __('Restore Selected', 'unused-media-auditor') : __('Archive Selected', 'unused-media-auditor');
         $primary_value = ('archived' === $context) ? 'restore' : 'archive';
+        $select_label = ('archived' === $context) ? __('Restore or delete', 'unused-media-auditor') : __('Delete or archive', 'unused-media-auditor');
         ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <?php wp_nonce_field($nonce_action); ?>
             <input type="hidden" name="action" value="<?php echo esc_attr($form_action); ?>">
             <div class="uma-toolbar">
-                <label class="uma-select-all">
-                    <input type="checkbox" class="uma-toggle-all">
-                    <span><?php esc_html_e('Select all on page', 'unused-media-auditor'); ?></span>
-                </label>
-                <label>
-                    <span class="screen-reader-text"><?php esc_html_e('Bulk action', 'unused-media-auditor'); ?></span>
-                    <select name="bulk_action">
-                        <option value=""><?php esc_html_e('Bulk actions', 'unused-media-auditor'); ?></option>
+                <div class="uma-toolbar__actions">
+                    <span class="uma-toolbar__label"><?php esc_html_e('Selected items', 'unused-media-auditor'); ?></span>
+                    <label class="screen-reader-text" for="uma-bulk-action-<?php echo esc_attr($context); ?>"><?php esc_html_e('Bulk action', 'unused-media-auditor'); ?></label>
+                    <select id="uma-bulk-action-<?php echo esc_attr($context); ?>" name="bulk_action" class="uma-bulk-action">
+                        <option value=""><?php echo esc_html($select_label); ?></option>
                         <option value="<?php echo esc_attr($primary_value); ?>"><?php echo esc_html($primary_label); ?></option>
                         <option value="delete"><?php esc_html_e('Delete Permanently', 'unused-media-auditor'); ?></option>
                     </select>
-                </label>
-                <?php submit_button(__('Apply', 'unused-media-auditor'), 'secondary', '', false); ?>
-                <a href="<?php echo esc_url(add_query_arg(array('page' => ('archived' === $context) ? 'uma-archived-images' : 'uma-unused-images', 'uma_refresh' => 1), admin_url('upload.php'))); ?>" class="button"><?php esc_html_e('Refresh Scan', 'unused-media-auditor'); ?></a>
+                    <?php submit_button(__('Apply', 'unused-media-auditor'), 'primary', 'uma_apply_bulk_action', false, array('class' => 'button button-primary uma-apply-action')); ?>
+                    <span class="uma-selection-summary" aria-live="polite"><?php esc_html_e('0 selected', 'unused-media-auditor'); ?></span>
+                </div>
+                <div class="uma-toolbar__utilities">
+                    <label class="uma-select-all">
+                        <input type="checkbox" class="uma-toggle-all">
+                        <span><?php esc_html_e('Select all on page', 'unused-media-auditor'); ?></span>
+                    </label>
+                    <a href="<?php echo esc_url(add_query_arg(array('page' => ('archived' === $context) ? 'uma-archived-images' : 'uma-unused-images', 'uma_refresh' => 1), admin_url('upload.php'))); ?>" class="button"><?php esc_html_e('Refresh Scan', 'unused-media-auditor'); ?></a>
+                </div>
             </div>
             <?php if (empty($items)) : ?>
                 <div class="notice notice-info inline"><p><?php esc_html_e('No images found for this view.', 'unused-media-auditor'); ?></p></div>
             <?php else : ?>
                 <div class="uma-grid">
                     <?php foreach ($items as $item) : ?>
-                        <label class="uma-card">
-                            <input type="checkbox" name="attachment_ids[]" value="<?php echo esc_attr((string) $item['id']); ?>">
+                        <article class="uma-card">
+                            <div class="uma-card__select">
+                                <label>
+                                    <input type="checkbox" name="attachment_ids[]" value="<?php echo esc_attr((string) $item['id']); ?>">
+                                    <span><?php esc_html_e('Select item', 'unused-media-auditor'); ?></span>
+                                </label>
+                            </div>
                             <span class="uma-card__preview">
                                 <img src="<?php echo esc_url((string) $item['thumbnail']); ?>" alt="">
                             </span>
@@ -389,7 +399,7 @@ class UMA_Admin
                                     <a href="<?php echo esc_url((string) $item['edit_link']); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Open attachment', 'unused-media-auditor'); ?></a>
                                 <?php endif; ?>
                             </span>
-                        </label>
+                        </article>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
