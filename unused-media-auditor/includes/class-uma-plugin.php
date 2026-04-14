@@ -50,6 +50,7 @@ class UMA_Plugin
         add_action('admin_post_uma_bulk_unused', array($this->admin, 'handle_unused_bulk_action'));
         add_action('admin_post_uma_bulk_archived', array($this->admin, 'handle_archived_bulk_action'));
         add_action('admin_post_uma_save_settings', array($this->admin, 'handle_settings_submit'));
+        add_action('wp_ajax_uma_load_unused_images', array($this->admin, 'ajax_load_unused_images'));
         add_action(UMA_CRON_HOOK, array($this->archiver, 'cleanup_expired_archives'));
         add_action('uma_archives_changed', array($this->scanner, 'flush_cache'));
     }

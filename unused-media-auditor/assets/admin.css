@@ -11,6 +11,29 @@
     background: linear-gradient(180deg, #ffffff 0%, #f6f7f7 100%);
 }
 
+.uma-async-panel {
+    min-height: 180px;
+}
+
+.uma-loading-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    margin-top: 18px;
+    border: 1px solid #dcdcde;
+    border-radius: 14px;
+    background: #fff;
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.uma-loading-state .spinner {
+    float: none;
+    margin: 0;
+}
+
 .uma-toolbar__actions,
 .uma-toolbar__utilities {
     display: flex;

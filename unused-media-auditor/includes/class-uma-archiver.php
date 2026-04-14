@@ -277,7 +277,12 @@ class UMA_Archiver
     {
         $item = $this->build_manifest_item($relative_path, $upload_dir);
 
-        if (empty($item['source_rel']) || isset($seen_relative_paths[$item['source_rel']])) {
+        if (
+            empty($item['source_rel']) ||
+            isset($seen_relative_paths[$item['source_rel']]) ||
+            empty($item['source_abs']) ||
+            ! file_exists($item['source_abs'])
+        ) {
             return;
         }
 

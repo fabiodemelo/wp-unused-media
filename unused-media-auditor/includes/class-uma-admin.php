@@ -94,6 +94,15 @@ class UMA_Admin
             UMA_VERSION,
             true
         );
+
+        wp_localize_script('uma-admin', 'umaAdmin', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'loadUnusedNonce' => wp_create_nonce('uma_load_unused_images'),
+            'messages' => array(
+                'loading' => __('Loading images...', 'unused-media-auditor'),
+                'loadError' => __('The image list could not be loaded. Please try Refresh Scan.', 'unused-media-auditor'),
+            ),
+        ));
     }
 
     public function render_unused_page()
@@ -106,17 +115,45 @@ class UMA_Admin
             $this->scanner->flush_cache();
         }
 
-        $items = $this->scanner->get_unused_images();
-
         $this->render_notices();
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Unused Images', 'unused-media-auditor'); ?></h1>
             <p><?php esc_html_e('These image attachments do not appear to be referenced in posts, metadata, options, or common WordPress image relationships.', 'unused-media-auditor'); ?></p>
             <p><?php esc_html_e('This review runs inside WordPress without requiring extra server tools. Results are advisory only: if a theme, builder, or custom code uses hardcoded file paths or unusual storage patterns, review carefully and choose what to archive or delete yourself.', 'unused-media-auditor'); ?></p>
-            <?php $this->render_bulk_form($items, 'unused'); ?>
+            <div
+                class="uma-async-panel"
+                data-uma-async-container="unused-images"
+                data-uma-async-context="unused"
+                data-uma-async-action="uma_load_unused_images"
+            >
+                <div class="uma-loading-state" role="status" aria-live="polite">
+                    <span class="spinner is-active" aria-hidden="true"></span>
+                    <span><?php esc_html_e('Loading images...', 'unused-media-auditor'); ?></span>
+                </div>
+            </div>
         </div>
         <?php
+    }
+
+    public function ajax_load_unused_images()
+    {
+        if (! current_user_can('upload_files')) {
+            wp_send_json_error(array(
+                'message' => __('You do not have permission to load these images.', 'unused-media-auditor'),
+            ), 403);
+        }
+
+        check_ajax_referer('uma_load_unused_images', 'nonce');
+
+        $items = $this->scanner->get_unused_images();
+
+        ob_start();
+        $this->render_bulk_form($items, 'unused');
+
+        wp_send_json_success(array(
+            'html' => ob_get_clean(),
+        ));
     }
 
     public function render_archived_page()
@@ -328,10 +365,6 @@ class UMA_Admin
 
         if ('archived' === $context) {
             return $this->scanner->is_attachment_archived($attachment_id);
-        }
-
-        if (! $this->scanner->is_attachment_unused($attachment_id)) {
-            return false;
         }
 
         return ! $this->scanner->is_attachment_archived($attachment_id);
