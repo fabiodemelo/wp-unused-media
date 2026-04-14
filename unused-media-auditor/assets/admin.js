@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             toggle.indeterminate = selectedCount > 0 && selectedCount < itemCheckboxes.length;
 
             if (applyButton) {
-                applyButton.disabled = selectedCount === 0 || !actionSelect || actionSelect.value === '';
+                applyButton.disabled = selectedCount === 0;
             }
         };
 

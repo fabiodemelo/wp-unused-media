@@ -192,7 +192,7 @@ class UMA_Admin
         check_admin_referer('uma_bulk_unused');
 
         $ids = $this->sanitize_attachment_ids(isset($_POST['attachment_ids']) ? (array) $_POST['attachment_ids'] : array());
-        $bulk_action = isset($_POST['bulk_action']) ? sanitize_key(wp_unslash($_POST['bulk_action'])) : '';
+        $bulk_action = isset($_POST['bulk_action']) ? sanitize_key(wp_unslash($_POST['bulk_action'])) : 'archive';
 
         if (empty($ids) || ! in_array($bulk_action, array('archive', 'delete'), true)) {
             $this->redirect_with_notice('uma-unused-images', 'warning', __('Select at least one image and a valid bulk action.', 'unused-media-auditor'));
@@ -226,7 +226,7 @@ class UMA_Admin
         check_admin_referer('uma_bulk_archived');
 
         $ids = $this->sanitize_attachment_ids(isset($_POST['attachment_ids']) ? (array) $_POST['attachment_ids'] : array());
-        $bulk_action = isset($_POST['bulk_action']) ? sanitize_key(wp_unslash($_POST['bulk_action'])) : '';
+        $bulk_action = isset($_POST['bulk_action']) ? sanitize_key(wp_unslash($_POST['bulk_action'])) : 'restore';
 
         if (empty($ids) || ! in_array($bulk_action, array('restore', 'delete'), true)) {
             $this->redirect_with_notice('uma-archived-images', 'warning', __('Select at least one archived image and a valid bulk action.', 'unused-media-auditor'));
@@ -348,7 +348,6 @@ class UMA_Admin
         $nonce_action = ('archived' === $context) ? 'uma_bulk_archived' : 'uma_bulk_unused';
         $primary_label = ('archived' === $context) ? __('Restore Selected', 'unused-media-auditor') : __('Archive Selected', 'unused-media-auditor');
         $primary_value = ('archived' === $context) ? 'restore' : 'archive';
-        $select_label = ('archived' === $context) ? __('Restore or delete', 'unused-media-auditor') : __('Delete or archive', 'unused-media-auditor');
         ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <?php wp_nonce_field($nonce_action); ?>
@@ -358,8 +357,7 @@ class UMA_Admin
                     <span class="uma-toolbar__label"><?php esc_html_e('Selected items', 'unused-media-auditor'); ?></span>
                     <label class="screen-reader-text" for="uma-bulk-action-<?php echo esc_attr($context); ?>"><?php esc_html_e('Bulk action', 'unused-media-auditor'); ?></label>
                     <select id="uma-bulk-action-<?php echo esc_attr($context); ?>" name="bulk_action" class="uma-bulk-action">
-                        <option value=""><?php echo esc_html($select_label); ?></option>
-                        <option value="<?php echo esc_attr($primary_value); ?>"><?php echo esc_html($primary_label); ?></option>
+                        <option value="<?php echo esc_attr($primary_value); ?>" selected="selected"><?php echo esc_html($primary_label); ?></option>
                         <option value="delete"><?php esc_html_e('Delete Permanently', 'unused-media-auditor'); ?></option>
                     </select>
                     <?php submit_button(__('Apply', 'unused-media-auditor'), 'primary', 'uma_apply_bulk_action', false, array('class' => 'button button-primary uma-apply-action')); ?>
